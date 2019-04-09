@@ -36,6 +36,8 @@ This script fetches top n submissions per subreddit, and sends them via emails i
                             email addr to which to send contents
     ```
 
+5. Additionally, you can create a `bash` script based off the code in step 4, and setup a `crontab` job for automation tasks.
+
 ## License
 
 MIT
