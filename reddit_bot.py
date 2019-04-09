@@ -29,8 +29,8 @@ def parse_args():
     
     parser.add_argument('--limit', metavar='INT', type=int, default=10,
                         help='maximum num of posts per subreddit')
-    parser.add_argument('--num_ups', metavar='INT', type=int, default=50,
-                        help='minimun num of upvotes on a particular submission')
+    parser.add_argument('--score', metavar='INT', type=int, default=50,
+                        help='minimun score on a particular submission')
     parser.add_argument('--num_comments', metavar='INT', type=int, default=20,
                         help='minimun num of comments on a particular submission')
 
@@ -47,17 +47,17 @@ def parse_args():
     return args
 
 
-def get_reddit_posts(subreddits, limit, num_ups, num_comments):
+def get_reddit_posts(subreddits, limit, score, num_comments):
     data = {}
     for subreddit in subreddits:
         data[subreddit.display_name] = []
         for submission in subreddit.hot(limit=limit):
-            if (submission.stickied is False) and (submission.ups >= num_ups or submission.num_comments >= num_comments):
+            if (submission.stickied is False) and (submission.score >= score or submission.num_comments >= num_comments):
                 post = {}
                 post['title'] = submission.title
-                post['link'] = submission.shortlink
-                post['ups'] = submission.ups
-                post['comments'] = submission.num_comments
+                post['shortlink'] = submission.shortlink
+                post['score'] = submission.score
+                post['num_comments'] = submission.num_comments
                 data[subreddit.display_name].append(post)
     
     return data
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     from_address = Address(mail_user, mail_user, mail_domain)
     to_address = [Address(e.split('@')[0], e.split('@')[0], e.split('@')[1]) for e in args.to_address]
     subject = f'Reddit Submission Daily Highlights ({now})'
-    data = get_reddit_posts(subreddits, args.limit, args.num_ups, args.num_comments)
+    data = get_reddit_posts(subreddits, args.limit, args.score, args.num_comments)
     
     msg = create_email_message(
         from_address=from_address,
