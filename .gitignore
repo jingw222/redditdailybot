@@ -1,0 +1,6 @@
+__pycache__
+*.ipynb
+.ipynb_checkpoints
+praw.ini
+*.log
+run.sh
