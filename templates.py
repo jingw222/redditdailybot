@@ -1,10 +1,21 @@
 from jinja2 import Template
 
 
+header_template = Template("""
+    <html>
+        <head><meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"></head>
+        <body>
+          <h2>Hi {{ mail_user }}, </h2>
+        </body>
+    </html>
+    """
+)
+
 body_template = Template("""
     <html>
         <head><meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0"></head>
         <body>
+           <center><a href="https://www.reddit.com"><img src="cid:logo" alt="reddit-logo"></a></center>
            {% for subreddit in data.keys() %}
             <h2><a href="https://www.reddit.com/r/{{ subreddit }}">/r/{{ subreddit }}</a></h2>
                 <p style="font-size:18px;">

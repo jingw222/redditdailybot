@@ -5,8 +5,10 @@ import logging
 import smtplib
 import praw
 from email.message import EmailMessage
+from email.mime.image import MIMEImage
 from email.headerregistry import Address
-from templates import body_template
+
+from templates import header_template, body_template
 
 
 logger = logging.getLogger(__file__)
@@ -68,7 +70,13 @@ def create_email_message(from_address, to_address, subject, body):
     msg['From'] = from_address
     msg['To'] = to_address
     msg['Subject'] = subject
-    msg.set_content(body, subtype='html')
+    
+#     msg.set_content(header, subtype='html')
+    msg.add_alternative(body, subtype='html')
+    
+    with open('logo.png', 'rb') as img:
+        msg.get_payload()[0].add_related(img.read(), 'image', 'jpeg', cid='logo')
+
     return msg
 
 
