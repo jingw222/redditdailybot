@@ -12,7 +12,7 @@ from templates import body_template
 logger = logging.getLogger(__file__)
 logger.setLevel(logging.DEBUG)
 Formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-Handler = logging.FileHandler('bot.log')
+Handler = logging.FileHandler(os.path.join('bot.log'))
 Handler.setFormatter(Formatter)
 logger.addHandler(Handler)
 
@@ -79,6 +79,8 @@ if __name__ == '__main__':
 
     reddit = praw.Reddit(args.reddit_config)
     subreddits = [reddit.subreddit(subreddit) for subreddit in args.subreddits]
+    data = get_reddit_posts(subreddits, args.limit, args.score, args.num_comments)
+    logger.debug('Reddit submissions fetched.')
     
     mail_user, mail_domain = args.from_address.split('@')
     mail_host = "smtp." + mail_domain
@@ -86,9 +88,8 @@ if __name__ == '__main__':
     
     from_address = Address(mail_user, mail_user, mail_domain)
     to_address = [Address(e.split('@')[0], e.split('@')[0], e.split('@')[1]) for e in args.to_address]
-    subject = f'Reddit Submission Daily Highlights ({now})'
-    data = get_reddit_posts(subreddits, args.limit, args.score, args.num_comments)
-    
+    subject = f'Reddit Daily Digest ({now})'
+
     msg = create_email_message(
         from_address=from_address,
         to_address=to_address,
@@ -100,4 +101,4 @@ if __name__ == '__main__':
         smtp_server.login(mail_user, mail_pass)
         smtp_server.send_message(msg)
 
-    logger.debug('Email sent successfully')
+    logger.debug('Email sent successfully.')
