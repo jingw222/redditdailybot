@@ -1,6 +1,6 @@
-# A Reddit submission highlights bot 
+# A Reddit daily digest bot 
 
-This script fetches top n submissions per subreddit, and sends them via emails if a submission's score or number of comments exceeds a threshold.
+This script fetches top n submissions per subreddit, and sends them via emails if a submission's score or number of comments exceeds a certain threshold.
 
 ![demo](demo.png)
 
@@ -44,4 +44,4 @@ This script fetches top n submissions per subreddit, and sends them via emails i
 
 ## License
 
-MIT
+[MIT](https://github.com/jingw222/redditdailybot/blob/master/LICENSE)
