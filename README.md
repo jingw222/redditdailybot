@@ -6,13 +6,13 @@ This script fetches top n submissions per subreddit, and sends them via emails i
 
 ## Usage
 
-1. Clone the repository
+1. Clone the repository.
 
 2. Go to [Reddit](https://www.reddit.com/prefs/apps/) and create a developper application for script use. 
 
-3. Create a `praw.ini` file in the repository folder  following the [doc](https://praw.readthedocs.io/en/latest/getting_started/configuration/prawini.html)
+3. Create a `praw.ini` file in the repository folder  following the [doc](https://praw.readthedocs.io/en/latest/getting_started/configuration/prawini.html).
 
-4. Run `reddit_bot.py` with your config options, like below
+4. Run `reddit_bot.py` with your config options, like below.
 
     ```
     $ python3 reddit_bot.py --reddit_config bot1 --subreddits machinelearning datascience python --from_address fromemail@example.com --from_address_pass password --to_address toemail1@example.com toemail2@example.com
