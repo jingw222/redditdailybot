@@ -39,7 +39,7 @@ This script fetches top n submissions per subreddit, and sends them via emails i
 5. Additionally, you can create a `run.sh` script based off the code in step 4, and setup a [cron](https://en.wikipedia.org/wiki/Cron) job for automation tasks. For example, to run it daily at 4 p.m., we can put this in our `crontab` file:
 
     ```
-    0 16 * * * cd /home/jameswong/projects/redditbot/ && /bin/bash run.sh
+    * 16 * * * cd /home/jameswong/projects/redditbot/ && /bin/bash run.sh
     ```
 
 ## License
