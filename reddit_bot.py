@@ -8,7 +8,7 @@ from email.message import EmailMessage
 from email.mime.image import MIMEImage
 from email.headerregistry import Address
 
-from templates import header_template, body_template
+from templates import body_template
 
 
 logger = logging.getLogger(__file__)
@@ -20,7 +20,7 @@ logger.addHandler(Handler)
 
 
 def parse_args():
-    """a helper function to parse command line arguments."""
+    """A helper function to parse command line arguments."""
 
     parser = argparse.ArgumentParser(description='Reddit submission daily highlights command line arguments')
 
@@ -50,6 +50,26 @@ def parse_args():
 
 
 def get_reddit_posts(subreddits, limit, score, num_comments):
+    """Collect submissions related data, including title, link, current score, the number of comments, etc.
+    
+    Params:
+    -------
+    subreddits: list
+        a list of praw.Reddit.subreddit instances
+    limit: int
+        maximum number of submissions per subreddit
+    score: int
+        the minimal threshold of *score* 
+    num_comments: int
+        the minimal threshold of *number of comments*
+    
+    Return:
+    -------
+    data: dict
+        all the submissions related data
+    
+    """
+    
     data = {}
     for subreddit in subreddits:
         data[subreddit.display_name] = []
@@ -66,12 +86,30 @@ def get_reddit_posts(subreddits, limit, score, num_comments):
 
 
 def create_email_message(from_address, to_address, subject, body):
+    """Create a EmailMessage object for sending emails.
+    
+    Params:
+    -------
+    from_address: string
+        a sending email address
+    to_address: list of string
+        a list of receiving email addresses
+    subject: string
+        email subject
+    body: string
+        email body
+    
+    Return:
+    -------
+    msg: EmailMessage
+        a email message ready to send via smtp
+    """
+    
     msg = EmailMessage()
     msg['From'] = from_address
     msg['To'] = to_address
     msg['Subject'] = subject
     
-#     msg.set_content(header, subtype='html')
     msg.add_alternative(body, subtype='html')
     
     with open('logo.png', 'rb') as img:
@@ -83,8 +121,6 @@ def create_email_message(from_address, to_address, subject, body):
 if __name__ == '__main__':
     args = parse_args()
     
-    now = datetime.datetime.now().strftime('%Y-%m-%d')
-
     reddit = praw.Reddit(args.reddit_config)
     subreddits = [reddit.subreddit(subreddit) for subreddit in args.subreddits]
     data = get_reddit_posts(subreddits, args.limit, args.score, args.num_comments)
@@ -96,6 +132,7 @@ if __name__ == '__main__':
     
     from_address = Address(mail_user, mail_user, mail_domain)
     to_address = [Address(e.split('@')[0], e.split('@')[0], e.split('@')[1]) for e in args.to_address]
+    now = datetime.datetime.now().strftime('%Y-%m-%d')
     subject = f'Reddit Daily Digest ({now})'
 
     msg = create_email_message(
@@ -105,6 +142,7 @@ if __name__ == '__main__':
         body=body_template.render(data=data)
     )
 
+    # Sends the emails
     with smtplib.SMTP_SSL(mail_host, 465) as smtp_server:
         smtp_server.login(mail_user, mail_pass)
         smtp_server.send_message(msg)
